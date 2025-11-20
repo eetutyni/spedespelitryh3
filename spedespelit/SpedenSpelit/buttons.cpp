@@ -5,7 +5,10 @@
 
 void initButtonsAndButtonInterrupts(void)
 {
-  // See requirements for this function from buttons.h
+  for (int pin = 2; pin < 6; pin++)
+  {
+    pinMode(pin, INPUT_PULLUP);
+  }
 }
 
 ISR(PCINT2_vect) {
