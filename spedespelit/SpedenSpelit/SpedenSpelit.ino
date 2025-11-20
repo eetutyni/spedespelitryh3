@@ -11,6 +11,7 @@ volatile bool newTimerInterrupt = false;  // for timer interrupt handler
 
 void setup()
 {
+  initButtonsAndButtonInterrupts();
   /*
     Initialize here all modules
   */
