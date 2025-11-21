@@ -21,8 +21,18 @@ void loop()
 {
   if(buttonNumber>=0)
   {
-     // start the game if buttonNumber == 4
-     // check the game if 0<=buttonNumber<4
+ if (startRequested) {
+    startRequested = false;
+    startNewGame();
+  }
+
+  if (buttonNumber != -1) {
+    checkPlayerInput(buttonNumber);
+    buttonNumber = -1;
+  }
+}
+     // start the game if buttonNumber == 6
+     // check the game if 0<=buttonNumber<6
   }
 
   if(newTimerInterrupt == true)

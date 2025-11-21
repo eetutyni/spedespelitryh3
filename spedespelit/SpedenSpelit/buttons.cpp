@@ -40,7 +40,7 @@ ISR(PCINT2_vect) {
       }
     if (digitalRead(6) == LOW) 
     {
-      
+      buttonNumber = 6;
     }
    /*
      Here you implement logic for handling
