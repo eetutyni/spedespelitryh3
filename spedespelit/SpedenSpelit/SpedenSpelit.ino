@@ -61,4 +61,3 @@ void startTheGame()
 {
    // see requirements for the function from SpedenSpelit.h
 }
-
