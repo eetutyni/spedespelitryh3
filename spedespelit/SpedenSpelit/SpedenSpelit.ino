@@ -5,8 +5,12 @@
 
 // Use these 2 volatile variables for communicating between
 // loop() function and interrupt handlers
-volatile int buttonNumber = -1;           // for buttons interrupt handler
-volatile bool newTimerInterrupt = false;  // for timer interrupt handler
+volatile int buttonNumber = -1;         
+volatile bool newTimerInterrupt = false;  
+static int interruptCount = 0;
+int currentLed = -1;
+bool correct = false;
+bool running = false;
 
 
 void setup()
@@ -27,17 +31,40 @@ void loop()
 
   if(newTimerInterrupt == true)
   {
+
      // new random number must be generated
      // and corresponding let must be activated
   }
 }
 
+void resetGame()
+{
+
+}
+
 void initializeTimer(void)
 {
+  cli();
+  TCCR1A = 0;
+  TCCR1B = (1 << WGM12);
+  TCCR1B |= (1 << CS12) | (1 << CS10);
+  OCR1A = 15624;
+  TIMSK1 |= (1 << OCIE1A);
+
 	// see requirements for the function from SpedenSpelit.h
 }
 ISR(TIMER1_COMPA_vect)
 {
+    newTimerInterrupt = true;
+
+    interruptCount++;
+
+    if(interruptCount >= 10)
+    {
+      OCR1A = OCR1A / 2;
+
+      interruptCount = 0;
+    }
   /*
   Communicate to loop() that it's time to make new random number.
   Increase timer interrupt rate after 10 interrupts.
@@ -54,11 +81,20 @@ void checkGame(byte nbrOfButtonPush)
 
 void initializeGame()
 {
-	// see requirements for the function from SpedenSpelit.h
+	currentLed = -1;
+  interruptCount = 0;
+  newTimerInterrupt = false;  
+  int currentLed = -1;
+  correct = false;
+  buttonNumber = -1;    
+  running = true;
 }
 
 void startTheGame()
 {
+  initializeGame();
+  initializeTimer();
+  
    // see requirements for the function from SpedenSpelit.h
 }
 
