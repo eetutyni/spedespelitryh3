@@ -1,14 +1,14 @@
 #include "leds.h"
 
 
-1
+
 
 /*
   initializeLeds() subroutine intializes analog pins A2,A3,A4,A5
   to be used as outputs. Speden Spelit leds are connected to those
   pins.  
 */
-void initializeLeds(); {
+void initializeLeds() {
 pinMode(A2, OUTPUT); //output, jotta ledit syttyy
 pinMode(A3, OUTPUT);
 pinMode(A4, OUTPUT);
@@ -16,10 +16,7 @@ pinMode(A5, OUTPUT);
 
 //ledit sammutettuna aluksi
 
-    digitalWrite(A2, LOW); 
-    digitalWrite(A3, LOW);
-    digitalWrite(A4, LOW);
-    digitalWrite(A5, LOW);
+    clearAllLeds();
 }
 /*
   setLed(byte) sets correct led number given as 0,1,2 or 3
@@ -31,9 +28,11 @@ pinMode(A5, OUTPUT);
   parameters:
   byte ledNumber is 0,1,2 or 3
 */
-void setLed(byte ledNumber);{
+void setLed(byte ledNumber) {
 
-switch (lednumber) {
+clearAllLeds();
+
+switch (ledNumber) {
   case 0:
 digitalWrite(A2, HIGH);
 break;
@@ -53,7 +52,7 @@ break;
 /*
   clearAllLeds(void) subroutine clears all leds
 */
-void clearAllLeds(void); {
+void clearAllLeds(void) {
 digitalWrite(A2, LOW);
 digitalWrite(A3, LOW);
 digitalWrite(A4, LOW);
@@ -62,11 +61,12 @@ digitalWrite(A5, LOW);
 /*
   setAllLeds subroutine sets all leds
 */
-void setAllLeds(void); //ledit päälle
+void setAllLeds(void) { //ledit päälle
 digitalWrite(A2, HIGH);
 digitalWrite(A3, HIGH);
 digitalWrite(A4, HIGH);
 digitalWrite(A5, HIGH);
+}
 /*
   show1() subroutine shows numbers 0,1,...,15 as binary numbers
   waits a bit and repeats number "show"
@@ -119,6 +119,43 @@ if (now - lastUpdate >= interval) {
   int rounds: This parameter determines how many times 0,1,2,3 sequence
               is shown. 
 */
-void show2(int);
 
-#endif
+
+unsigned long lastChange = 0; // aika jolloin viime led vaihto tapahtui
+unsigned long show2Interval = 300; // kuinka nopeasti led vaihtuu
+const unsigned long minInterval = 70; // maksiminopeus
+int currentLed = 0;
+int roundsLeft = 0;
+bool show2Running = false;
+
+void show2(int rounds) {
+if (!show2Running) {
+  show2Running = true;
+  roundsLeft = rounds;
+  currentLed = 0;
+  show2Interval = 300;
+  lastChange = millis();
+}
+unsigned long now = millis();
+
+if (now - lastChange >= show2Interval) {
+  lastChange = now;
+
+  clearAllLeds();
+  setLed(currentLed);
+  currentLed++;
+
+  if (currentLed >3) {
+    currentLed = 0;
+    roundsLeft--;
+// nopeutetaan joka kierroksella
+    if (show2Interval > minInterval) {
+      show2Interval -=20;
+    }
+  }
+  if (roundsLeft <= 0) {
+    show2Running = false;
+    clearAllLeds();
+  }
+}
+}
