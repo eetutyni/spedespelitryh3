@@ -31,6 +31,50 @@ void clearAllLeds(void);
 */
 void setAllLeds(void);
 
+#ifndef LEDS_H
+#define LEDS_H
+
+#include <Arduino.h>
+
+/*
+  initializeLeds() subroutine initializes analog pins A2,A3,A4,A5
+  to be used as outputs.
+*/
+void initializeLeds();
+
+/*
+  setLed(byte) sets correct led number given as 0,1,2 or 3
+*/
+void setLed(byte ledNumber);
+
+/*
+  clearAllLeds(void) subroutine clears all leds
+*/
+void clearAllLeds(void);
+
+/*
+  setAllLeds subroutine sets all leds
+*/
+void setAllLeds(void);
+
+/*
+  drawBinary(int) shows number as 4-bit binary using LEDs
+*/
+void drawBinary(int number);
+
+/*
+  show1() subroutine shows numbers 0-15 as binary numbers
+*/
+void show1(void);
+
+/*
+  show2(int) subroutine shows leds 0,1,2,3... with increasing speed
+*/
+void show2(int rounds);
+
+#endif
+
+
 /*
   show1() subroutine shows numbers 0,1,...,15 as binary numbers
   waits a bit and repeats number "show"

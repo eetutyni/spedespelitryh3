@@ -3,11 +3,7 @@
 
 
 
-/*
-  initializeLeds() subroutine intializes analog pins A2,A3,A4,A5
-  to be used as outputs. Speden Spelit leds are connected to those
-  pins.  
-*/
+
 void initializeLeds() {
 pinMode(A2, OUTPUT); //output, jotta ledit syttyy
 pinMode(A3, OUTPUT);
@@ -18,16 +14,7 @@ pinMode(A5, OUTPUT);
 
     clearAllLeds();
 }
-/*
-  setLed(byte) sets correct led number given as 0,1,2 or 3
-  led number 0 corresponds to led connected at Arduino pin A2
-  led number 1 => Arduino pin A3
-  led number 2 => Arduino pin A4
-  led number 3 => Arduino pin A5
-  
-  parameters:
-  byte ledNumber is 0,1,2 or 3
-*/
+
 void setLed(byte ledNumber) {
 
 clearAllLeds();
@@ -49,18 +36,15 @@ break;
 }
   
 }
-/*
-  clearAllLeds(void) subroutine clears all leds
-*/
+
+
 void clearAllLeds(void) {
 digitalWrite(A2, LOW);
 digitalWrite(A3, LOW);
 digitalWrite(A4, LOW);
 digitalWrite(A5, LOW);
 } //Sammuttaa ledit
-/*
-  setAllLeds subroutine sets all leds
-*/
+
 void setAllLeds(void) { //ledit päälle
 digitalWrite(A2, HIGH);
 digitalWrite(A3, HIGH);
@@ -100,7 +84,7 @@ unsigned long now = millis();
 if (now - lastUpdate >= interval) {
   lastUpdate = now; // tarkistaa, onko aika vaihtaa seuraava numero
 
-  clearAllLeds();
+  
   drawBinary(showNumber);
   showNumber++;
 
@@ -141,7 +125,7 @@ unsigned long now = millis();
 if (now - lastChange >= show2Interval) {
   lastChange = now;
 
-  clearAllLeds();
+  
   setLed(currentLed);
   currentLed++;
 
