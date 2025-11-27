@@ -2,8 +2,6 @@
 
 
 
-
-
 void initializeLeds() {
 pinMode(A2, OUTPUT); //output, jotta ledit syttyy
 pinMode(A3, OUTPUT);
@@ -60,18 +58,7 @@ void drawBinary(int number) {
     if (number & 2) digitalWrite(A3, HIGH); else digitalWrite(A3, LOW);
     if (number & 4) digitalWrite(A4, HIGH); else digitalWrite(A4, LOW);
     if (number & 8) digitalWrite(A5, HIGH); else digitalWrite(A5, LOW);
-}
-
-
-unsigned long lastUpdate = 0; 
-const unsigned long interval = 200; // 200ms per numero, muuttumaton positiivinen arvo, 
-int showNumber = 0;  // 0–15
-bool show1Running = false;
-
-
-
-
-
+  }
 
 void show1(void) {
 if (!show1Running) {
@@ -79,6 +66,7 @@ if (!show1Running) {
   lastUpdate = millis();
   showNumber = 0;
 }
+
 unsigned long now = millis();
 
 if (now - lastUpdate >= interval) {
@@ -105,12 +93,6 @@ if (now - lastUpdate >= interval) {
 */
 
 
-unsigned long lastChange = 0; // aika jolloin viime led vaihto tapahtui
-unsigned long show2Interval = 300; // kuinka nopeasti led vaihtuu
-const unsigned long minInterval = 70; // maksiminopeus
-int currentLed = 0;
-int roundsLeft = 0;
-bool show2Running = false;
 
 void show2(int rounds) {
 if (!show2Running) {
