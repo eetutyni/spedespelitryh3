@@ -45,7 +45,7 @@ ISR(PCINT2_vect)
      if (digitalRead(3) == HIGH)
     {
         delayMicroseconds(300);           // small stabilization delay
-        if (digitalRead(3) == HIGH && now - lastButtonPressTime[0] > debounceDelay)
+        if (digitalRead(3) == HIGH && now - lastButtonPressTime[1] > debounceDelay)
         {
             buttonNumber = 2;
             lastButtonPressTime[0] = now;
@@ -56,7 +56,7 @@ ISR(PCINT2_vect)
      if (digitalRead(4) == HIGH)
     {
         delayMicroseconds(300);           // small stabilization delay
-        if (digitalRead(4) == HIGH && now - lastButtonPressTime[0] > debounceDelay)
+        if (digitalRead(4) == HIGH && now - lastButtonPressTime[2] > debounceDelay)
         {
             buttonNumber = 3;
             lastButtonPressTime[0] = now;
@@ -67,7 +67,7 @@ ISR(PCINT2_vect)
      if (digitalRead(5) == HIGH)
     {
         delayMicroseconds(300);           // small stabilization delay
-        if (digitalRead(5) == HIGH && now - lastButtonPressTime[0] > debounceDelay)
+        if (digitalRead(5) == HIGH && now - lastButtonPressTime[3] > debounceDelay)
         {
             buttonNumber = 4;
             lastButtonPressTime[0] = now;

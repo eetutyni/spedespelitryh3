@@ -5,6 +5,7 @@
 #include <avr/interrupt.h>
 
 extern volatile int buttonNumber;  
+extern int score;
 
 /*
   initializeTimer() subroutine intializes Arduino Timer1 module to

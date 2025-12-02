@@ -1,8 +1,10 @@
 #include "leds.h"
 #include "buttons.h"
 #include <Arduino.h>
+#include "display.h"
 
 volatile int buttonNumber = -1;
+int score = 0;
 volatile bool newTimerInterrupt = false;
 
 int currentLed = -1;
@@ -42,9 +44,15 @@ void showNextLed()
 
 void checkGame(byte nbrOfButtonPush)
 {
-    if(nbrOfButtonPush == currentLed + 1) return; // correct
-    running = false;
+    if(nbrOfButtonPush == currentLed + 1)
+    {
+        // Correct answer → increase score
+        score++;
+        showResult(score);
+        return;
+    }
 
+    running = false;
     setAllLeds();
 }
 
@@ -55,6 +63,9 @@ void initializeGame()
     interruptCount = 0;
     buttonNumber = -1;
     running = true;
+
+    score = 0;
+    showResult(score);
 }
 
 void startTheGame()
@@ -72,6 +83,8 @@ void setup()
     initButtonsAndButtonInterrupts();
     initializeLeds();
     Serial.println("Press any game button to start!");
+
+    initializeDisplay();
 }
 
 void startLights()

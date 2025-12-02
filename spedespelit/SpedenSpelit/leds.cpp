@@ -1,5 +1,6 @@
 #include "leds.h"
 
+int showNumber = 0;
 
 
 void initializeLeds() {
