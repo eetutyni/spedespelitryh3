@@ -2,6 +2,7 @@
 #include "buttons.h"
 #include <Arduino.h>
 #include "display.h"
+#include "melody.h"    
 
 volatile int buttonNumber = -1;
 int score = 0;
@@ -46,7 +47,6 @@ void checkGame(byte nbrOfButtonPush)
 {
     if(nbrOfButtonPush == currentLed + 1)
     {
-        // Correct answer → increase score
         score++;
         showResult(score);
         return;
@@ -75,6 +75,8 @@ void startTheGame()
     initializeTimer();
     randomSeed(analogRead(A0));
     showNextLed(); // first LED
+
+    startMelody();   // musiikki alkaa
 }
 
 void setup()
@@ -149,4 +151,6 @@ void loop()
         clearAllLeds();
         showNextLed();
     }
+
+    playMelodyLoop(); // musiikki soi jos peli on käynnissä
 }
