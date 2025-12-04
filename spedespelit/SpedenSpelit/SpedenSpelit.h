@@ -4,6 +4,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+extern volatile int buttonNumber;  
+extern int score;
+
 /*
   initializeTimer() subroutine intializes Arduino Timer1 module to
   give interrupts at rate 1Hz
@@ -21,6 +24,7 @@ ISR(TIMER1_COMPA_vect);
 */
 void initializeGame(void);
 
+void startLights(void);
 /*
   checkGame() subroutine is used to check the status
   of the Game after each player button press.
@@ -42,6 +46,5 @@ void checkGame(byte);
   the Game.
 */
 void startTheGame(void);
-
 
 #endif
