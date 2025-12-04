@@ -107,7 +107,7 @@ if (now - lastUpdate >= interval) {
 
 unsigned long lastChange = 0; // aika jolloin viime led vaihto tapahtui
 unsigned long show2Interval = 300; // kuinka nopeasti led vaihtuu
-const unsigned long minInterval = 70; // maksiminopeus
+const unsigned long minInterval = 70; // nopein vilkkumisnopeus
 int currentLed = 0;
 int roundsLeft = 0;
 bool show2Running = false;
@@ -138,7 +138,7 @@ if (now - lastChange >= show2Interval) {
     }
   }
   if (roundsLeft <= 0) {
-    show2Running = false;
+    show2Running = false; //pysäytetään
     clearAllLeds();
   }
 }
