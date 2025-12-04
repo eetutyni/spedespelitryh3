@@ -7,7 +7,8 @@
 extern bool running;
 
 // Buzzer pinni
-const int buzzerPin = 2;
+const int buzzerPin = 12;
+const int groundPin = 13;
 
 // Nuottien taajuudet (Hz)
 const int C4 = 262;

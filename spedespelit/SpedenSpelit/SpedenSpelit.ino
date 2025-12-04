@@ -2,13 +2,14 @@
 #include "buttons.h"
 #include <Arduino.h>
 #include "display.h"
-#include "melody.h"    
+#include "melody.h"   
 
 volatile int buttonNumber = -1;
 int score = 0;
 volatile bool newTimerInterrupt = false;
 
 int currentLed = -1;
+int previousLed = -1;
 bool running = false;
 bool idle = true;
 unsigned long startMillis = 0;
@@ -39,22 +40,39 @@ ISR(TIMER1_COMPA_vect)
 
 void showNextLed()
 {
+    previousLed = currentLed;  
+    
+    // Pick a new LED
     currentLed = random(0,4);
+
+    // Light only the new LED
+    clearAllLeds();
     setLed(currentLed);
 }
 
 void checkGame(byte nbrOfButtonPush)
 {
-    if(nbrOfButtonPush == currentLed + 1)
+     // Correct if it matches the current LED
+    if (nbrOfButtonPush == currentLed + 1)
     {
         score++;
         showResult(score);
         return;
     }
 
+    // Also correct if it matches the *previous* LED
+    if (nbrOfButtonPush == previousLed + 1)
+    {
+        score++;
+        showResult(score);
+        return;
+    }
+
+    // Otherwise: wrong
     running = false;
     setAllLeds();
 }
+
 
 void initializeGame()
 {
@@ -63,7 +81,6 @@ void initializeGame()
     interruptCount = 0;
     buttonNumber = -1;
     running = true;
-
     score = 0;
     showResult(score);
 }
@@ -85,6 +102,9 @@ void setup()
     initButtonsAndButtonInterrupts();
     initializeLeds();
     Serial.println("Press any game button to start!");
+
+    pinMode(13, OUTPUT);
+    digitalWrite(13, LOW);
 
     initializeDisplay();
 }

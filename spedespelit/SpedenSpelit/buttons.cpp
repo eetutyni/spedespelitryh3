@@ -32,7 +32,6 @@ ISR(PCINT2_vect)
     // pin 2 → button 1
      if (digitalRead(2) == HIGH)
     {
-        delayMicroseconds(300);           // small stabilization delay
         if (digitalRead(2) == HIGH && now - lastButtonPressTime[0] > debounceDelay)
         {
             buttonNumber = 1;
@@ -44,7 +43,6 @@ ISR(PCINT2_vect)
     // pin 4 → button 3
      if (digitalRead(3) == HIGH)
     {
-        delayMicroseconds(300);           // small stabilization delay
         if (digitalRead(3) == HIGH && now - lastButtonPressTime[1] > debounceDelay)
         {
             buttonNumber = 2;
@@ -55,7 +53,6 @@ ISR(PCINT2_vect)
     // pin 5 → button 4
      if (digitalRead(4) == HIGH)
     {
-        delayMicroseconds(300);           // small stabilization delay
         if (digitalRead(4) == HIGH && now - lastButtonPressTime[2] > debounceDelay)
         {
             buttonNumber = 3;
@@ -63,15 +60,12 @@ ISR(PCINT2_vect)
             return;
         }
     }
-    // pin 6 → start button
-     if (digitalRead(5) == HIGH)
-    {
-        delayMicroseconds(300);           // small stabilization delay
-        if (digitalRead(5) == HIGH && now - lastButtonPressTime[3] > debounceDelay)
-        {
+    
+        const int state = digitalRead(5);
+        if (state == HIGH && (now - lastButtonPressTime[3] > debounceDelay)) {
             buttonNumber = 4;
-            lastButtonPressTime[0] = now;
+            lastButtonPressTime[3] = now;
             return;
         }
-    }
+    
 }

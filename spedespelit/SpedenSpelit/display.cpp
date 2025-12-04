@@ -57,6 +57,7 @@ void showLeft(int digit)
 
 void showRight(int digit)
 {
+    //EI SHIFTOUT
     digitalWrite(RCLK_R, LOW);
     shiftOut(SER_R, SRCLK_R, MSBFIRST, digitTable[digit]);
     digitalWrite(RCLK_R, HIGH);
