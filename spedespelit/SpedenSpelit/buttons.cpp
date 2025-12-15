@@ -24,6 +24,7 @@ void initButtonsAndButtonInterrupts(void)
               (1 << PCINT22);  // pin 6
 }
 
+
 // Pin Change Interrupt Handler
 ISR(PCINT2_vect)
 {

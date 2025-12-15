@@ -15,6 +15,8 @@ void showLeft(int digit);
 // Write to right digit (0–9)
 void showRight(int digit);
 
+void bitshift(int dataPin, int clockPin, uint8_t value);
+
 // Show score or any result (same as showNumber)
 void showResult(int num);
 

@@ -26,6 +26,16 @@ static const uint8_t digitTable[] =
   0b10010000  // 9
 };
 
+void bitshift(int dataPin, int clockPin, uint8_t value)
+{
+    for (int i = 7; i >= 0; i--)
+    {
+        digitalWrite(dataPin, (value >> i) & 1);
+        digitalWrite(clockPin, HIGH);
+        digitalWrite(clockPin, LOW);
+    }
+}
+
 void initializeDisplay()
 {
     pinMode(SRCLK_L, OUTPUT);
@@ -51,15 +61,14 @@ void showNumbers(int num)
 void showLeft(int digit)
 {
     digitalWrite(RCLK_L, LOW);
-    shiftOut(SER_L, SRCLK_L, MSBFIRST, digitTable[digit]);
+    bitshift(SER_L, SRCLK_L, digitTable[digit]);
     digitalWrite(RCLK_L, HIGH);
 }
 
 void showRight(int digit)
 {
-    //EI SHIFTOUT
     digitalWrite(RCLK_R, LOW);
-    shiftOut(SER_R, SRCLK_R, MSBFIRST, digitTable[digit]);
+    bitshift(SER_R, SRCLK_R, digitTable[digit]);
     digitalWrite(RCLK_R, HIGH);
 }
 
