@@ -10,15 +10,20 @@ extern bool running;
 const int buzzerPin = 12;
 const int groundPin = 13;
 
-// Nuottien taajuudet (Hz)
+// ======================
+// NOTE FREQUENCIES (Hz)
+// ======================
 const int C4 = 262;
 const int D4 = 294;
 const int E4 = 330;
 const int G4 = 392;
+const int A4 = 440;
 const int B4 = 494;
 const int C5 = 523;
 
-// Melodia
+// ======================
+// BACKGROUND MELODY
+// ======================
 const int melody[] = {
   E4, E4, D4, D4,
   E4, G4, B4, C4,
@@ -27,7 +32,6 @@ const int melody[] = {
   E4, G4, B4, C4
 };
 
-// Kestot
 const int duration[] = {
   250, 250, 10, 10,
   200, 200, 250, 250,
@@ -36,50 +40,125 @@ const int duration[] = {
   200, 200, 200, 200
 };
 
-// Sisäisiä muuttujia melodian toistoon
+// ======================
+// POINT SOUND — "BING"
+// ======================
+const int pointMelody[] = { G4, C5 };
+const int pointDuration[] = { 80, 120 };
+
+// ======================
+// GAME OVER — "WA WA WAAAA"
+// ======================
+const int gameOverMelody[] = { A4, G4, E4, D4, C4 };
+const int gameOverDuration[] = { 200, 200, 200, 250, 600 };
+
+// ======================
+// INTERNAL STATE
+// ======================
 static int noteIndex = 0;
 static unsigned long lastNoteTime = 0;
 static bool melodyActive = false;
 
-// Aloita musiikki (kutsutaan pelin startissa)
+static bool fxActive = false;
+static int fxIndex = 0;
+static unsigned long fxLastTime = 0;
+static const int* fxMelody = nullptr;
+static const int* fxDuration = nullptr;
+static int fxLength = 0;
+
+// ======================
+// BACKGROUND MELODY
+// ======================
 void startMelody() {
     noteIndex = 0;
     lastNoteTime = 0;
     melodyActive = true;
 }
 
-// Soita musiikkia taustalla (kutsutaan loopissa)
+void stopMelody() {
+    melodyActive = false;
+    noTone(buzzerPin);
+}
+
 void playMelodyLoop() {
 
-    if (!running || !melodyActive) {
-        noTone(buzzerPin);
+    if (!running || !melodyActive || fxActive) {
         return;
     }
 
     unsigned long now = millis();
 
-    // Ensimmäinen nuotti käynnistä heti
     if (lastNoteTime == 0) {
         tone(buzzerPin, melody[noteIndex]);
         lastNoteTime = now;
         return;
     }
 
-    // Nuotin kesto täynnä siirry seuraavaan
     if (now - lastNoteTime >= (unsigned long)duration[noteIndex] + 150) {
-        
-        noTone(buzzerPin); // tauko
 
+        noTone(buzzerPin);
         noteIndex++;
 
-        // Jos melodia loppuu aloita alusta
         if (noteIndex >= (int)(sizeof(melody) / sizeof(melody[0]))) {
             noteIndex = 0;
         }
 
-        tone(buzzerPin, melody[noteIndex]);   // soita seuraava
+        tone(buzzerPin, melody[noteIndex]);
         lastNoteTime = now;
     }
+}
+
+// ======================
+// SOUND EFFECT ENGINE
+// ======================
+void startFX(const int* mel, const int* dur, int len) {
+    fxMelody = mel;
+    fxDuration = dur;
+    fxLength = len;
+    fxIndex = 0;
+    fxLastTime = 0;
+    fxActive = true;
+    noTone(buzzerPin);
+}
+
+void playFXLoop() {
+
+    if (!fxActive) return;
+
+    unsigned long now = millis();
+
+    if (fxLastTime == 0) {
+        tone(buzzerPin, fxMelody[fxIndex]);
+        fxLastTime = now;
+        return;
+    }
+
+    if (now - fxLastTime >= (unsigned long)fxDuration[fxIndex] + 50) {
+
+        noTone(buzzerPin);
+        fxIndex++;
+
+        if (fxIndex >= fxLength) {
+            fxActive = false;
+            fxLastTime = 0;
+            return;
+        }
+
+        tone(buzzerPin, fxMelody[fxIndex]);
+        fxLastTime = now;
+    }
+}
+
+// ======================
+// PUBLIC SOUND CALLS
+// ======================
+void playPointSound() {
+    startFX(pointMelody, pointDuration, 2);
+}
+
+void playGameOverSound() {
+    stopMelody();
+    startFX(gameOverMelody, gameOverDuration, 5);
 }
 
 #endif
