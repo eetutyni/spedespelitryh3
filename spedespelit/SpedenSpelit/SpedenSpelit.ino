@@ -20,9 +20,9 @@ void initializeTimer(void)
 {
     cli();
     TCCR1A = 0;
-    TCCR1B = (1 << WGM12);
-    TCCR1B |= (1 << CS12) | (1 << CS10);
-    OCR1A = 15624;
+    TCCR1B = (1 << WGM12); // CTC mode
+    TCCR1B |= (1 << CS12) | (1 << CS10); // Prescaler 1024
+    OCR1A = 15624; // 1Hz approx
     TIMSK1 |= (1 << OCIE1A);
     sei();
 }
@@ -33,7 +33,7 @@ ISR(TIMER1_COMPA_vect)
     interruptCount++;
     if(interruptCount >= 10)
     {
-        OCR1A = OCR1A / 2;
+        OCR1A = OCR1A / 2; // speed up
         interruptCount = 0;
     }
 }
@@ -41,37 +41,38 @@ ISR(TIMER1_COMPA_vect)
 void showNextLed()
 {
     previousLed = currentLed;  
+    
+    // Pick a new LED
     currentLed = random(0,4);
 
+    // Light only the new LED
     clearAllLeds();
     setLed(currentLed);
 }
 
 void checkGame(byte nbrOfButtonPush)
 {
-    // Correct: current LED
+     // Correct if it matches the current LED
     if (nbrOfButtonPush == currentLed + 1)
     {
         score++;
         showResult(score);
-        playPointSound();      // 🔊 POINT SOUND
         return;
     }
 
-    // Correct: previous LED
+    // Also correct if it matches the *previous* LED
     if (nbrOfButtonPush == previousLed + 1)
     {
         score++;
         showResult(score);
-        playPointSound();      // 🔊 POINT SOUND
         return;
     }
 
-    // Wrong → game over
+    // Otherwise: wrong
     running = false;
     setAllLeds();
-    playGameOverSound();       // 🔊 GAME OVER SOUND
 }
+
 
 void initializeGame()
 {
@@ -90,9 +91,9 @@ void startTheGame()
     initializeLeds();
     initializeTimer();
     randomSeed(analogRead(A0));
-    showNextLed();
+    showNextLed(); // first LED
 
-    startMelody();   // 🎵 background music
+    startMelody();   // musiikki alkaa
 }
 
 void setup()
@@ -109,15 +110,19 @@ void setup()
 }
 
 void startLights()
-{
-    for(int i = 0; i < 3; i++)
     {
         setAllLeds();
         delay(500);
         clearAllLeds();
         delay(500);
+        setAllLeds();
+        delay(500);
+        clearAllLeds();
+        delay(500);
+        setAllLeds();
+        delay(500);
+        clearAllLeds();
     }
-}
 
 void loop()
 {
@@ -138,6 +143,7 @@ void loop()
                 Serial.println("Game starting in 3 seconds...");
             }
         }
+        
         else if(running && buttonNumber >= 1 && buttonNumber <= 4)
         {
             checkGame(buttonNumber);
@@ -158,7 +164,7 @@ void loop()
         }
     }
 
-    // Timer-driven LED update
+    // Timer-driven LED
     if(newTimerInterrupt && running)
     {
         newTimerInterrupt = false;
@@ -166,6 +172,5 @@ void loop()
         showNextLed();
     }
 
-    playFXLoop();       // 🔊 sound effects engine
-    playMelodyLoop();   // 🎵 background melody
+    playMelodyLoop(); // musiikki soi jos peli on käynnissä
 }
