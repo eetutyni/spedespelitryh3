@@ -1,17 +1,16 @@
 #include <Arduino.h>
 #include "display.h"
 
-// LEFT DISPLAY PINS
+// vasen näyttö
 const int SRCLK_L = 11;
 const int RCLK_L  = 6;
 const int SER_L   = 7;
 
-// RIGHT DISPLAY PINS
+// oikea näyttö
 const int SRCLK_R = 8;
 const int RCLK_R  = 9;
 const int SER_R   = 10;
 
-// COMMON CATHODE digit table
 static const uint8_t digitTable[] =
 {
   0b11000000, // 0

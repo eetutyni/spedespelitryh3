@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-// Initialize both 7-segment displays
+// Initialize both 7 segment displays
 void initializeDisplay();
 
 // Show a two-digit number (0–99)
@@ -17,7 +17,7 @@ void showRight(int digit);
 
 void bitshift(int dataPin, int clockPin, uint8_t value);
 
-// Show score or any result (same as showNumber)
+// Show score or any result
 void showResult(int num);
 
 #endif

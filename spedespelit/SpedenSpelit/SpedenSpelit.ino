@@ -31,44 +31,49 @@ ISR(TIMER1_COMPA_vect)
 {
     newTimerInterrupt = true;
     interruptCount++;
-    if(interruptCount >= 10)
+    if (interruptCount >= 10)
+{
+    if (OCR1A > 800)        // minimum speed
     {
-        OCR1A = OCR1A / 2; // speed up
-        interruptCount = 0;
+        OCR1A = OCR1A * 0.85;  //nopeutus, about 15% nopeampi per 10 keskeytystä
     }
+    interruptCount = 0;
+}
+
+
 }
 
 void showNextLed()
 {
     previousLed = currentLed;  
     
-    // Pick a new LED
     currentLed = random(0,4);
 
-    // Light only the new LED
     clearAllLeds();
     setLed(currentLed);
 }
 
 void checkGame(byte nbrOfButtonPush)
 {
-     // Correct if it matches the current LED
+     // jos napin numero on sama kuin ledin numro = oikein, jos ei niin väärin, tarkistaa myös edellisen ledin eli voi painaa edellistä ja sitten nykyistä.
     if (nbrOfButtonPush == currentLed + 1)
     {
         score++;
         showResult(score);
+        playPointSound();
+        Serial.println(score);
         return;
     }
 
-    // Also correct if it matches the *previous* LED
-    if (nbrOfButtonPush == previousLed + 1)
+    else if (nbrOfButtonPush == previousLed + 1)
     {
         score++;
+        playPointSound(); 
         showResult(score);
         return;
-    }
+    }   
 
-    // Otherwise: wrong
+    playGameOverSound();
     running = false;
     setAllLeds();
 }
@@ -91,7 +96,7 @@ void startTheGame()
     initializeLeds();
     initializeTimer();
     randomSeed(analogRead(A0));
-    showNextLed(); // first LED
+    showNextLed(); 
 
     startMelody();   // musiikki alkaa
 }
@@ -128,31 +133,28 @@ void loop()
 {
     unsigned long now = millis();
 
-    // Handle button presses
-    if(buttonNumber >= 0)
-    {
-        Serial.print("Button pressed: ");
-        Serial.println(buttonNumber);
-        
-        if(buttonNumber == 4)
-        {
-            if(idle)
-            {
-                idle = false;
-                startMillis = now;
-                Serial.println("Game starting in 3 seconds...");
-            }
-        }
-        
-        else if(running && buttonNumber >= 1 && buttonNumber <= 4)
-        {
-            checkGame(buttonNumber);
-        }
+    if (buttonNumber >= 0)
+{
+    Serial.print("Button pressed: ");
+    Serial.println(buttonNumber);
 
-        buttonNumber = -1;
+    // peli alkaa kun nappia 4 painetaan eli pinni 5
+    if (idle && buttonNumber == 4)
+    {
+        idle = false;
+        startMillis = now;
+        Serial.println("Game starting in 3 seconds...");
+    }
+    else if (running && buttonNumber >= 1 && buttonNumber <= 4)
+    {
+        checkGame(buttonNumber);
     }
 
-    // Countdown to start game
+    buttonNumber = -1;
+}
+
+
+    // Countdown
     if(!idle && !running)
     {
         if(now - startMillis >= 3000)
@@ -164,7 +166,6 @@ void loop()
         }
     }
 
-    // Timer-driven LED
     if(newTimerInterrupt && running)
     {
         newTimerInterrupt = false;
@@ -172,5 +173,7 @@ void loop()
         showNextLed();
     }
 
-    playMelodyLoop(); // musiikki soi jos peli on käynnissä
+    playFXLoop();     
+    playMelodyLoop();
+
 }
